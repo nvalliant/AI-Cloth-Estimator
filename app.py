@@ -20,7 +20,7 @@ model = tf.keras.models.load_model('T-ShirtClassifier.keras')
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('home.html')
 
 # 2. Define the "endpoint" your HTML will talk to
 @app.route("/predict", methods=["POST"])
