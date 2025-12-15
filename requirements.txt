@@ -1,0 +1,8 @@
+Flask==3.0.0
+gunicorn==21.2.0
+tensorflow
+pandas
+scikit-learn
+Pillow
+opencv-python-headless
+numpy

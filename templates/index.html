@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Cloth Estimator - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/main.js" defer></script>
+    
+</head>
+<body class="bg-slate-200 text-slate-800">
+
+    <nav class="bg-white border-b shadow-gray-400 shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 ">
+                <div class="flex items-center">
+                    <div class="shrink-0 flex items-center gap-2">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white ">
+                            AI
+                        </div>
+                        <span class="font-bold text-xl tracking-tight">Cloth Estimator</span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-slate-900">Estimasi Kebutuhan Kain</h1>
+            <p class="mt-2 text-slate-600">Unggah desain atau masukkan parameter untuk mendapatkan prediksi pemakaian bahan yang akurat menggunakan AI.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-1 space-y-6">
+                
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders"></i> Parameter Input
+                    </h2>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Upload Foto Kaos</label>
+                        <div class="dashed-border bg-indigo-50 p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-indigo-100 transition duration-200 group" id="dropzone">
+                            <div class="h-12 w-12 bg-white rounded-full flex items-center justify-center shadow-sm mb-3 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-file text-xl text-blue-500"></i>
+                            </div>
+                            <p class="text-sm text-indigo-900 font-medium">Klik untuk upload</p>
+                            <p class="text-xs text-slate-500 mt-1">JPG, PNG</p>
+                            <input type="file" class="hidden" id="fileInput">
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2 text-center" id="fileName">Belum ada file dipilih</p>
+                    </div>
+
+                    <form id="estimationForm" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="size" class="block text-sm font-medium ">Ukuran</label>
+                                <select id="size" class="mt-1 block w-full rounded-lg   border p-2.5 text-sm ">
+                                    <option value="" disabled selected>Pilih Ukuran</option>
+                                    <option>S</option>
+                                    <option>M</option>
+                                    <option>L</option>
+                                    <option>XL</option>
+                                    <option>XXL</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="width" class="block text-sm font-medium ">Lebar Kain (cm)</label>
+                                <div class="relative mt-1 rounded-md shadow-sm">
+                                    <input type="number" name="width" id="width" class="block w-full rounded-lg border-gray-300 bg-slate-50 border p-2.5 text-sm " placeholder="150" value="150">
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                        <span class="text-gray-500 sm:text-sm">cm</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                             <label for="qty" class="block text-sm font-medium ">Jumlah Produksi (Pcs)</label>
+                             <input type="number" id="qty" class="mt-1 block w-full rounded-lg border-gray-300 bg-slate-50 border p-2.5 text-sm " value="1">
+                        </div>
+
+                        <button type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg shadow-lg shadow-indigo-500/30 transition duration-200 flex items-center justify-center gap-2 mt-4" id="calculateBtn">
+                            Hitung Estimasi AI
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                
+                <div id="emptyState" class="h-full bg-white rounded-xl shadow-sm border border-slate-200 p-10 flex flex-col items-center justify-center text-center min-h-100">
+                    <div class="bg-indigo-50 p-4 rounded-full mb-4">
+                        <i class="fa-solid fa-robot text-4xl text-indigo-300"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-slate-900">Siap Melakukan Estimasi</h3>
+                    <p class="text-slate-500 max-w-sm mt-2">Masukkan parameter dan biarkan AI menghitung kebutuhan kain anda.</p>
+                </div>
+
+                <div id="loadingState" class="hidden h-full bg-white rounded-xl shadow-sm border border-slate-200 p-10 flex flex-col items-center justify-center text-center min-h-100">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                    <h3 class="text-lg font-medium text-slate-900">Sedang Memproses...</h3>
+                    <p class="text-slate-500 mt-2">Menjalankan Model</p>
+                </div>
+
+                <div id="resultState" class="hidden space-y-6">
+                    
+                    <div class="grid md:grid-rows-2 gap-4">
+                        <div class="bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl p-6 text-white shadow-lg shadow-indigo-500/20">
+                            <p class="text-indigo-100 text-sm font-medium mb-1">Jenis Cuttingan Kaos</p>
+                            <h3 class="text-3xl font-bold" id="cuttinganKaos">-</h3>
+                            
+                        </div>
+                        <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+                            <p class="text-slate-500 text-sm font-medium mb-1">Konsumsi Bahan Per Pcs</p>
+                            <h3 class="text-2xl font-bold text-slate-800" id="resultPerPcs">- M</h3>
+                        </div>
+                        <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+                            <p class="text-slate-500 text-sm font-medium mb-1">Konsumsi Bahan Total</p>
+                            <h3 class="text-2xl font-bold text-slate-800" id="resultTotal">- M</h3>
+                        </div>
+                        
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        
+                        
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    
+</body>
+</html>
